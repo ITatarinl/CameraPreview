@@ -13,6 +13,7 @@ namespace Editor.Scripts.EditorWindow
         private Quaternion _cameraRotation;
         private Vector3 _cameraPosition;
         private float _previewHeight;
+        private float _moveSreed;
 
         [MenuItem("Level Design/Camera Preview")]
         private static void OpenWindow()
@@ -26,7 +27,12 @@ namespace Editor.Scripts.EditorWindow
             _terrainTransform ??= FindObjectOfType<Terrain>().transform;
 
             _isCameraEnabled = GUILayout.Toggle(_isCameraEnabled, "Enable Camera"); //SceneView state switcher 
-        
+            
+            EditorGUILayout.LabelField("Camera speed");
+            _moveSreed = EditorGUILayout.FloatField("", _moveSreed);
+            if (_moveSreed <= 0)
+                _moveSreed = MOVE_SPEED;
+
             EditorGUILayout.LabelField("Preview Height");
             _previewHeight = EditorGUILayout.FloatField("", _previewHeight);
 
@@ -104,7 +110,7 @@ namespace Editor.Scripts.EditorWindow
 
             _terrainTransform ??= FindObjectOfType<Terrain>().transform;
             
-            _cameraPosition += direction * MOVE_SPEED;
+            _cameraPosition += direction * _moveSreed;
             _cameraPosition.y = _terrainTransform.position.y + _previewHeight;
 
             sceneView.LookAtDirect(_cameraPosition, _cameraRotation);
